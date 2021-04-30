@@ -17,4 +17,4 @@ typora-copy-images-to: images
    - [ ] 第二點
      - 這個是無順序清單
        1. 再來
-       2. ![conceptart-wulin-hamagong](D:\AI\MinWeiTsai\images\conceptart-wulin-hamagong.jpg)
+       2. 
