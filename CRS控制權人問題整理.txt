@@ -1,0 +1,19 @@
+整理：
+1.有控制權人身份的個人都會在ODS_CMFCUS2F建一筆資料
+2.CRM121.sql產生名單檔，這筆雙重身份的個人應該只會有一筆資料(傳給別組的名單，同一個個人戶只要一筆)
+名單檔的四種客戶身份資料結構：
+	A.申報法人戶：CUST_PO_FG = 'O' 【法人戶的CMFUSAGT_TYPE都為''】
+	B.申報個人戶且非控制權人：CUST_PO_FG = 'P' AND CMFUSAGT_TYPE = ''
+	C.非申報個人戶且為控制權人：CUST_PO_FG = 'P' AND CMFUSAGT_TYPE <> ''
+	D.申報個人戶且為控制權人：CUST_PO_FG = 'P' AND CMFUSAGT_TYPE <> ''
+
+3.個人B120179151，他有個人的身份，也同時是消極性法人的控制權人【D.申報個人戶且為控制權人】
+4.消極性法人的控制權人沒報送=>正確，因為CRSAGT=N，CRM251.sql不會產生這筆法人
+
+5.個人身份沒報送=>錯誤，java查詢的主客戶個人的查詢寫法沒考慮到【D.申報個人戶且為控制權人】所導致
+解法1：改java查詢主客戶的寫法，把控制權人FG=''拿掉
+看DB資料時，CUST_PO_FG = 'P' AND CMFUSAGT_TYPE <> ''，這種資料只會知道是有控制權人身份，要記得串帳戶檔才知道他是否為申報個人戶
+
+解法2：在CRM250.sql，把【CASE D】的資料，有串到帳戶檔的個人戶資料要多新增一筆【CASE B】的資料寫入APP_CUST
+即：個人B120179151會出現二筆，一筆CMFUSAGT_TYPE = ''，另一筆CMFUSAGT_TYPE <> ''
+java不用改
